@@ -9,7 +9,7 @@ function getRandomInt(min, max) {
   }
   if (min === max) {
     throw Error('Недопустимый диапазон! Необходимо расширить диапазон');
- }
+  }
   const rand = min + Math.random() * (max + 1 - min);
   return Math.floor(rand);
 }
@@ -21,7 +21,7 @@ function checkStringLength(string, maxLength) {
   if (string.length <= maxLength) {
     return true;
   }
-    return false;
+  return false;
 }
 
 checkStringLength('Не было Галiлея i Боба Марлея, не было Сальвадора Далi', 60);
