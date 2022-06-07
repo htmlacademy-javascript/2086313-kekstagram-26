@@ -18,11 +18,11 @@ getRandomInt(0,5);
 
 
 
-function lengthTest(string, maxLength) {
+function checkStringLength(string, maxLength) {
   if (string.length <= maxLength) {
     return true;
   }
     return false;
 }
 
-lengthTest('Не было Галiлея i Боба Марлея, не было Сальвадора Далi', 60);
+checkStringLength('Не было Галiлея i Боба Марлея, не было Сальвадора Далi', 60);
