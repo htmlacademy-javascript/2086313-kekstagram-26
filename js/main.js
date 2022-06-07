@@ -8,14 +8,13 @@ function getRandomInt(min, max) {
     min = memory;
   }
   if (min === max) {
-    throw Error('Недопустимый диапазон! Необходимо расширить диапазон')
+    throw Error('Недопустимый диапазон! Необходимо расширить диапазон');
  }
   const rand = min + Math.random() * (max + 1 - min);
   return Math.floor(rand);
 }
 
 getRandomInt(0,5);
-
 
 
 function checkStringLength(string, maxLength) {
