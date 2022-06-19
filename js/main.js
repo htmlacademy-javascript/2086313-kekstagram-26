@@ -106,8 +106,14 @@ const getPost = function (index) {
 };
 
 //Генерация итогового массива постов
-const posts = Array.from({length: NUMBER_OF_PHOTOS}, (_, i) => getPost(i));    //списал у сокурсников, не до конца понимаю, как работает счетчик
+const genPosts = function () {
 
+  return Array.from({length: NUMBER_OF_PHOTOS}, (_, i) => getPost(i));    //списал у сокурсников, не до конца понимаю, как работает счетчик
+
+};
+
+// eslint-disable-next-line no-unused-vars
+const posts = genPosts();
 //console.log(posts);
 //console.log(allCommentsIds);
 
