@@ -1,17 +1,35 @@
 //функция проверяет строку на соответствие максимальной длине
-const checkStringLength = function (string, length) {
-  return string.length <= length;
+const checkStringLength = function (string, maxLength) {
+  return string.length <= maxLength;
 };
 
 checkStringLength('test', 10); //вызов функции, чтобы не ругались проверки на то, что она не используется
 
 //функция генерирует случайные числа из диапазона
+const getRandomPositiveInteger = function (min, max) {
+  if (min < 0 || max < 0) {
+    throw Error('Недопустимый диапазон! Введите числа от нуля и больше!');
+  }
+  if (max < min) {
+    const memory = max;
+    max = min;
+    min = memory;
+  }
+  if (min === max) {
+    throw Error('Недопустимый диапазон! Необходимо расширить диапазон');
+  }
+  const rand = min + Math.random() * (max + 1 - min);
+  return Math.floor(rand);
+};
+
+/*
 const getRandomPositiveInteger = function (a, b) {
   const lower = Math.ceil(Math.min(Math.abs(a), Math.abs(b)));
   const upper = Math.floor(Math.max(Math.abs(a), Math.abs(b)));
   const result = Math.random() * (upper - lower + 1) + lower;
   return Math.floor(result);
 };
+*/
 
 //исходные данные
 const NUMBER_OF_PHOTOS = 25;
@@ -68,14 +86,14 @@ const getRandomArrayElement = function (array) {
 
 //Функция генерирует уникальное случайное число
 const getUniqueRandomInteger = function (min, max, usedIds) {
-  const UniqueRandomInteger = getRandomPositiveInteger(min, max);
+  const uniqueRandomInteger = getRandomPositiveInteger(min, max);
 
-  if (usedIds.includes(UniqueRandomInteger)){
+  if (usedIds.includes(uniqueRandomInteger)){
     return getUniqueRandomInteger(min, max, usedIds);
   }
 
-  usedIds.push(UniqueRandomInteger);
-  return UniqueRandomInteger;
+  usedIds.push(uniqueRandomInteger);
+  return uniqueRandomInteger;
 
 };
 
