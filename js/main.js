@@ -1,3 +1,8 @@
 import {genPosts} from './data.js';
+import {getPictures} from './pictures.js';
 
-genPosts();
+//создание постов
+const posts = genPosts();
+
+//прорисовка постов на сайте
+getPictures(posts);
