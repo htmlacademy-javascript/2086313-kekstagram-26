@@ -2,9 +2,9 @@
 
 const getPictures = function (posts) {
 
-const picturesContainer = document.querySelector('.pictures');
-const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
-const fragment = document.createDocumentFragment();
+  const picturesContainer = document.querySelector('.pictures');
+  const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');
+  const fragment = document.createDocumentFragment();
 
   posts.forEach((post) => {
     const picture = pictureTemplate.cloneNode(true);
