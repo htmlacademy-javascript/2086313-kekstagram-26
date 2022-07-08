@@ -1,3 +1,4 @@
+/* eslint-disable prefer-arrow-callback */
 import {checkStringLength} from './util.js';
 
 //работа с формой. вынести в модули
@@ -104,9 +105,10 @@ imgUploadForm.addEventListener('submit', (evt) => {
   const isValid = pristine.validate();
   if (isValid) {
     imgUploadForm.submit();
-  } else {
-    console.log('Форма невалидна');
   }
+//else {
+//    console.log('Форма невалидна');
+//  }
 });
 
 //попытка сбросить ошибки при изменении содержания полей. Сообщение об ошибке исчезает, но при повтоном
