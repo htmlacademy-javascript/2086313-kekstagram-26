@@ -1,6 +1,5 @@
 import {genPosts} from './data.js';
 import {getPictures} from './pictures.js';
-import './modal.js';
 import './form-validation.js';
 
 
