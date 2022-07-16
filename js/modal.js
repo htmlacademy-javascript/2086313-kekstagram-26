@@ -33,9 +33,12 @@ buttonClose.addEventListener('click', () => {
   uploadForm.reset();
 });
 
+//добавлять обработчик только при откртом модальном окне,
+//разобраться со сбросом всей формы по ESC (превью картинки и фильтры тоже), удалить обработчик
 document.addEventListener('keydown', (evt) => {
   if (evt.key === 'Escape') {
-    OpenOrCloseModal();
+    uploadFileOverlay.classList.add('hidden');
+    bodyDocument.classList.remove('modal-open');
     uploadForm.reset();
   }
 });
