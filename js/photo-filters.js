@@ -72,6 +72,7 @@ const resetFilter = () => {
   imgUploadPreview.children[0].style.filter = 'none';
   currentClassName = DEFAULT_FILTER;
   imgUploadPreview.children[0].classList.remove(getCheckedClass(DEFAULT_FILTER));
+  effectButtons[0].checked = true;
 };
 
 
@@ -140,3 +141,5 @@ sliderElement.noUiSlider.on('update', () => {
 
 //сброс фильтра по умолчанию
 resetFilter();
+
+export {resetFilter};
