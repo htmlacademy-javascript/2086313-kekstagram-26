@@ -57,7 +57,9 @@ uploadFile.addEventListener('change', () => {
 });
 
 //закрытие формы редактирования изображения по кнопке и сброс формы
-buttonClose.addEventListener('click', () => {
+//необходима отмена действия по умлчанию, тк у кнопки тип ресет, а мы "правильно" сбрасываем форму
+buttonClose.addEventListener('click', (evt) => {
+  evt.preventDefault();
   closeModal();
   resetForm();
 });
