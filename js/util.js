@@ -1,10 +1,8 @@
 //функция проверяет строку на соответствие максимальной длине ()
-const checkStringLength = function (string, maxLength) {
-  return string.length <= maxLength;
-};
+const checkStringLength = (string, maxLength) => string.length <= maxLength;
 
 //функция генерирует случайные числа из диапазона
-const getRandomPositiveInteger = function (min, max) {
+const getRandomPositiveInteger = (min, max) => {
   if (min < 0 || max < 0) {
     throw Error('Недопустимый диапазон! Введите числа от нуля и больше!');
   }
@@ -21,7 +19,7 @@ const getRandomPositiveInteger = function (min, max) {
 };
 
 //Функция генерирует уникальное случайное число
-const getUniqueRandomInteger = function (min, max, usedIds) {
+const getUniqueRandomInteger = (min, max, usedIds) => {
   const uniqueRandomInteger = getRandomPositiveInteger(min, max);
 
   if (usedIds.includes(uniqueRandomInteger)){
@@ -34,9 +32,7 @@ const getUniqueRandomInteger = function (min, max, usedIds) {
 };
 
 //функция генерирует случайный элемент массива
-const getRandomArrayElement = function (array) {
-  return array[getRandomPositiveInteger(0, array.length-1)];
-};
+const getRandomArrayElement = (array) => array[getRandomPositiveInteger(0, array.length-1)];
 
 
 //Алерт при ошибке ответа сервера

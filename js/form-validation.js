@@ -156,6 +156,20 @@ const unblockSubmitButton = () => {
   submitButton.textContent = 'Опубликовать';
 };
 
+const onSuccess = () => {
+  closeModal();
+  unblockSubmitButton();
+  resetForm();
+  showMessage(successMessage, successButton);
+};
+
+const onFail = () => {
+  closeModal();
+  showMessage(errorMessage,errorButton);
+  unblockSubmitButton();
+  resetUploadFile();
+};
+
 //отправки формы и вывод сообщений с результатом
 imgUploadForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
@@ -163,22 +177,7 @@ imgUploadForm.addEventListener('submit', (evt) => {
   const isValid = pristine.validate();
   if (isValid) {
     blockSubmitButton();
-    sendData(
-      () => {
-        closeModal();
-        unblockSubmitButton();
-        resetForm();
-        showMessage(successMessage, successButton);
-      },
-
-      () => {
-        closeModal();
-        showMessage(errorMessage,errorButton);
-        unblockSubmitButton();
-        resetUploadFile();
-      },
-
-      new FormData(evt.target));
+    sendData(onSuccess, onFail, new FormData(evt.target));
   }
 
 });

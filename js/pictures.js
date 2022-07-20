@@ -1,6 +1,6 @@
 //прорисовка постов на сайте
 
-const getPictures = function (posts) {
+const getPictures = (posts) => {
 
   const picturesContainer = document.querySelector('.pictures');
   const pictureTemplate = document.querySelector('#picture').content.querySelector('.picture');

@@ -1,8 +1,9 @@
 import {showAlert} from './util.js';
 
-//showAlert('Не удалось отправить форму. Попробуйте ещё раз')
+const SERVER_URL = 'https://26.javascript.pages.academy/kekstagram';
+
 const getData = (onSuccess) => {
-  fetch('https://26.javascript.pages.academy/kekstagram/data')
+  fetch(`${SERVER_URL}/data`)
     .then((response) => response.json())
     .then((posts) => {
       onSuccess(posts);
@@ -14,21 +15,21 @@ const getData = (onSuccess) => {
 
 const sendData = (onSuccess, onFail, body) => {
   fetch(
-    'https://26.javascript.pages.academy/kekstagram',
+    SERVER_URL,
     {
       method: 'POST',
-      body,  //записать в переменную теле запроса
+      body,
     },
   )
     .then((response) => {
       if (response.ok) {
-        onSuccess();  //написать функцию отправки
+        onSuccess();
       } else {
-        onFail('Не удалось отправить форму. Попробуйте ещё раз'); //подставить функцию алерта
+        onFail();
       }
     })
     .catch(() => {
-      onFail('Не удалось отправить форму. Попробуйте ещё раз');
+      onFail();
     });
 };
 
