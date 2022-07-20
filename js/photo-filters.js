@@ -55,7 +55,7 @@ const imgUploadPreview = document.querySelector('.img-upload__preview');
 const getCheckedClass = (filterName) => `effects__preview--${filterName}`;
 
 //добавляем новый класс, удаляем предыдущий
-const changeClass = function (newFilterName, oldFilterName) {
+const changeClass = (newFilterName, oldFilterName) => {
   const newClass = getCheckedClass(newFilterName);
   const oldClass = getCheckedClass(oldFilterName);
   imgUploadPreview.children[0].classList.add(newClass);
@@ -72,6 +72,7 @@ const resetFilter = () => {
   imgUploadPreview.children[0].style.filter = 'none';
   currentClassName = DEFAULT_FILTER;
   imgUploadPreview.children[0].classList.remove(getCheckedClass(DEFAULT_FILTER));
+  effectButtons[0].checked = true;
 };
 
 
@@ -85,20 +86,19 @@ noUiSlider.create(sliderElement, {
   step: 1,
   connect: 'lower',
   format: {
-    to: function (value) {
+    to: (value) => {
       if (Number.isInteger(value)) {
         return value.toFixed(0);
       }
       return value.toFixed(1);
     },
-    from: function (value) {
-      return parseFloat(value);
-    },
+    from: (value) => parseFloat(value)
+    ,
   },
 });
 
 //обновление параметров слайдера при выборе фильтра
-const changeSliderSettings = function (FilterName) {
+const changeSliderSettings = (FilterName) => {
   sliderElement.noUiSlider.updateOptions({
     range: {
       min: FiltersSettings[FilterName.toUpperCase()].MIN,
@@ -140,3 +140,5 @@ sliderElement.noUiSlider.on('update', () => {
 
 //сброс фильтра по умолчанию
 resetFilter();
+
+export {resetFilter};

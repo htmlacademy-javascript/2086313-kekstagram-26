@@ -12,11 +12,18 @@ const scaleControlValue = document.querySelector('.scale__control--value');
 let scale = SCALE_MAX;
 scaleControlValue.value = `${scale}%`;
 
+
 //запись масштаба в стиль картинки
 const getScaleStyle = () => {
   scaleControlValue.value = `${scale}%`;
   imgUploadPreview.children[0].style.transform = `scale(${scale/100})`;
 };
+
+const resetScale = () => {
+  scale = SCALE_MAX;
+  getScaleStyle();
+};
+
 
 scaleControlSmaller.addEventListener('click', () => {
   if (scale === SCALE_MIN) {
@@ -33,3 +40,5 @@ scaleControlBigger.addEventListener('click', () => {
   scale += SCALE_STEP;
   getScaleStyle();
 });
+
+export {resetScale};

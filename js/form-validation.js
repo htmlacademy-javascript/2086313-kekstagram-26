@@ -1,29 +1,100 @@
 import {checkStringLength} from './util.js';
+import {sendData} from './api.js';
+import {closeModal, resetUploadFile, isEscapeKey} from './modal.js';
+import {resetScale} from './photo-resize.js';
+import {resetFilter} from './photo-filters.js';
 
-//модуль отвечает за валидацию формы загрузки нового изображения (поля хэштегов и описания)
+//модуль отвечает за валидацию и отправку формы загрузки нового изображения (поля хэштегов и описания)
 
 //константы
+//максимальное кол-во хэштегов и длина описания фотографии
 const HASHTAG_MAX_AMOUNT = 5;
 const DESCRIPTION_MAX_LENGTH = 140;
 
-const errorMessage = {
+//Сообщения об ошибках при валидации формы
+const ErrorMessages = {
   HASHTAG_FORMAT : 'Каждый хэштег должен начинаться с # и после содержать от 1 до 19 букв и/или цифр',
   HASHTAG_AMOUNT : `Допустимо не более ${HASHTAG_MAX_AMOUNT} хэштегов`,
   HASHTAG_REPEAT : 'Хэштеги не должны повторяться',
   DESCRIPTION_LENGTH : `Максимальная длина описания - ${DESCRIPTION_MAX_LENGTH} символов`
 };
 
+//Сообщение об успешной отправке формы
+const successMessageTemplate  = document.querySelector('#success').content.querySelector('.success');
+const successMessage = successMessageTemplate.cloneNode(true);
+const successButton = successMessage.querySelector('.success__button');
+
+//Сообщение об ошибке отправки формы
+const errorMessageTemplate  = document.querySelector('#error').content.querySelector('.error');
+const errorMessage = errorMessageTemplate.cloneNode(true);
+const errorButton = errorMessage.querySelector('.error__button');
+
+
+//функция добавления сообщения о результате отправки и удаление по esc и кнопке
+const showMessage = (message, button) => {
+
+  const hideMessage = () => {
+    message.remove();
+    document.removeEventListener('keydown', onMessagePressEsc);
+    document.removeEventListener('click', isClickOuside);
+  };
+
+  document.body.append(message);
+  button.addEventListener('click', () => hideMessage());
+  document.addEventListener('keydown', onMessagePressEsc);
+  document.addEventListener('click', isClickOuside);
+
+  function isClickOuside  (evt) {
+    const clickInside = message.children[0].contains(evt.target);
+    if (!clickInside) {
+      hideMessage();
+    }
+  }
+
+  function onMessagePressEsc () {
+    if (isEscapeKey) {
+      hideMessage();
+    }
+  }
+
+};
+
+
 //Валидируемая форма
 const imgUploadForm = document.querySelector('.img-upload__form');
 const hashtagField = document.querySelector('.text__hashtags');
 const descriptionField = document.querySelector('.text__description');
+const submitButton = document.querySelector('.img-upload__submit');
 
-
+//создание pristin
 const pristine = new Pristine(imgUploadForm, {
   classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
   errorTextTag: 'div',
 }, true);
+
+//функции очистки полей ввода
+const resetHashtagField = () => {
+  hashtagField.value = '';
+};
+const resetDescriptionField = () => {
+  descriptionField.value = '';
+};
+
+//функция очистки валидатора
+const resetValidator = () => {
+  pristine.reset();
+};
+
+//функция сброса формы
+const resetForm = () => {
+  resetUploadFile();
+  resetHashtagField();
+  resetDescriptionField();
+  resetValidator();
+  resetScale();
+  resetFilter();
+};
 
 //функция берет строку из поля и преобразовавыет в массив, содержащий хэштеги
 const getHashtagsfromField = () => {
@@ -40,14 +111,14 @@ const isHashtagAmountValid = () => {
   return (hashtags.length <= HASHTAG_MAX_AMOUNT);
 };
 
-// регульярное выражение определяющее формат хэштегов
+//регулярное выражение определяющее формат хэштегов
 const hashtagRE = /^#[A-Za-zА-Яа-яЁё0-9]{1,19}$/;
 
-// проверка хэштега на соответствие формату
+//проверка хэштега на соответствие формату
 const isHashtagValid =  (currentValue) =>
   hashtagRE.test(currentValue);
 
-// проверка всех хэштега на соответствие формату
+//проверка всех хэштега на соответствие формату
 const isHashtagsValid = () => {
   if (hashtagField.value === '') {
     return true;
@@ -69,19 +140,46 @@ const isDescriptionValid = () =>
 
 
 //валидация на количество хэштегов, формат записи и дублирование. Валидация описания изображения на длину.
-pristine.addValidator(hashtagField, isHashtagAmountValid, errorMessage.HASHTAG_AMOUNT);
-pristine.addValidator(hashtagField, isHashtagsValid, errorMessage.HASHTAG_FORMAT);
-pristine.addValidator(hashtagField, isHashtagUnique, errorMessage.HASHTAG_REPEAT);
-pristine.addValidator(descriptionField, isDescriptionValid, errorMessage.DESCRIPTION_LENGTH);
+pristine.addValidator(hashtagField, isHashtagAmountValid, ErrorMessages.HASHTAG_AMOUNT);
+pristine.addValidator(hashtagField, isHashtagsValid, ErrorMessages.HASHTAG_FORMAT);
+pristine.addValidator(hashtagField, isHashtagUnique, ErrorMessages.HASHTAG_REPEAT);
+pristine.addValidator(descriptionField, isDescriptionValid, ErrorMessages.DESCRIPTION_LENGTH);
 
+//функции блокировки и разблокировки кнопки отправки
+const blockSubmitButton = () => {
+  submitButton.disabled = true;
+  submitButton.textContent = 'Публикую...';
+};
 
-//валидация формы и вывод в консоль результата при отправке формы
+const unblockSubmitButton = () => {
+  submitButton.disabled = false;
+  submitButton.textContent = 'Опубликовать';
+};
+
+const onSuccess = () => {
+  closeModal();
+  unblockSubmitButton();
+  resetForm();
+  showMessage(successMessage, successButton);
+};
+
+const onFail = () => {
+  closeModal();
+  showMessage(errorMessage,errorButton);
+  unblockSubmitButton();
+  resetUploadFile();
+};
+
+//отправки формы и вывод сообщений с результатом
 imgUploadForm.addEventListener('submit', (evt) => {
   evt.preventDefault();
 
   const isValid = pristine.validate();
   if (isValid) {
-    imgUploadForm.submit();
+    blockSubmitButton();
+    sendData(onSuccess, onFail, new FormData(evt.target));
   }
 
 });
+
+export {resetForm};
