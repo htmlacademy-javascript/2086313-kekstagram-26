@@ -30,8 +30,7 @@ const postsFilter = () => {
         randomPosts.push(postsDefault[getUniqueRandomInteger(0, postsDefault.length - 1, usedIndex)]);
       }
       usedIndex = [];
-      const renderPosts = () => getPictures(randomPosts);
-      renderPosts();
+      getPictures(randomPosts);
     }, RERENDER_DELAY));
   };
 
