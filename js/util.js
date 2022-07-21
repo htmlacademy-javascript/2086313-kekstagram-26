@@ -21,7 +21,6 @@ const getRandomPositiveInteger = (min, max) => {
 //Функция генерирует уникальное случайное число
 const getUniqueRandomInteger = (min, max, usedIds) => {
   const uniqueRandomInteger = getRandomPositiveInteger(min, max);
-
   if (usedIds.includes(uniqueRandomInteger)){
     return getUniqueRandomInteger(min, max, usedIds);
   }
@@ -57,4 +56,26 @@ const showAlert = (message) => {
   }, 3000);
 };
 
-export {checkStringLength, getRandomPositiveInteger, getRandomArrayElement, getUniqueRandomInteger, showAlert};
+const toggleFilterButton = (activButton, buttonClass, pressedButton) => {
+  activButton.classList.remove(buttonClass);
+  pressedButton.classList.add(buttonClass);
+};
+
+const debounce = (callback, timeoutDelay) => {
+  let timeoutId;
+  return (...rest) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => callback.apply(this, rest), timeoutDelay);
+  };
+};
+
+
+export {
+  checkStringLength,
+  getRandomPositiveInteger,
+  getRandomArrayElement,
+  getUniqueRandomInteger,
+  showAlert,
+  toggleFilterButton,
+  debounce};
+
