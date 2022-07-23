@@ -1,8 +1,9 @@
 import {checkStringLength} from './util.js';
 import {sendData} from './api.js';
-import {closeModal, resetUploadFile, isEscapeKey} from './modal.js';
+import {closeModal, resetUploadFile} from './modal.js';
 import {resetScale} from './photo-resize.js';
 import {resetFilter} from './photo-filters.js';
+import { showMessage } from './show-message.js';
 
 //модуль отвечает за валидацию и отправку формы загрузки нового изображения (поля хэштегов и описания)
 
@@ -21,53 +22,22 @@ const ErrorMessages = {
 
 //Сообщение об успешной отправке формы
 const successMessageTemplate  = document.querySelector('#success').content.querySelector('.success');
-const successMessage = successMessageTemplate.cloneNode(true);
-const successButton = successMessage.querySelector('.success__button');
+const successMessageElement = successMessageTemplate.cloneNode(true);
+const successButton = successMessageElement.querySelector('.success__button');
 
 //Сообщение об ошибке отправки формы
 const errorMessageTemplate  = document.querySelector('#error').content.querySelector('.error');
-const errorMessage = errorMessageTemplate.cloneNode(true);
-const errorButton = errorMessage.querySelector('.error__button');
-
-
-//функция добавления сообщения о результате отправки и удаление по esc и кнопке
-const showMessage = (message, button) => {
-
-  const hideMessage = () => {
-    message.remove();
-    document.removeEventListener('keydown', onMessagePressEsc);
-    document.removeEventListener('click', isClickOuside);
-  };
-
-  document.body.append(message);
-  button.addEventListener('click', () => hideMessage());
-  document.addEventListener('keydown', onMessagePressEsc);
-  document.addEventListener('click', isClickOuside);
-
-  function isClickOuside  (evt) {
-    const clickInside = message.children[0].contains(evt.target);
-    if (!clickInside) {
-      hideMessage();
-    }
-  }
-
-  function onMessagePressEsc () {
-    if (isEscapeKey) {
-      hideMessage();
-    }
-  }
-
-};
-
+const errorMessageElement = errorMessageTemplate.cloneNode(true);
+const errorButtonElement = errorMessageElement.querySelector('.error__button');
 
 //Валидируемая форма
-const imgUploadForm = document.querySelector('.img-upload__form');
-const hashtagField = document.querySelector('.text__hashtags');
-const descriptionField = document.querySelector('.text__description');
-const submitButton = document.querySelector('.img-upload__submit');
+const imgUploadFormElement = document.querySelector('.img-upload__form');
+const hashtagFieldElement = document.querySelector('.text__hashtags');
+const descriptionFieldElement = document.querySelector('.text__description');
+const submitButtonElement = document.querySelector('.img-upload__submit');
 
 //создание pristin
-const pristine = new Pristine(imgUploadForm, {
+const pristine = new Pristine(imgUploadFormElement, {
   classTo: 'img-upload__field-wrapper',
   errorTextParent: 'img-upload__field-wrapper',
   errorTextTag: 'div',
@@ -75,10 +45,10 @@ const pristine = new Pristine(imgUploadForm, {
 
 //функции очистки полей ввода
 const resetHashtagField = () => {
-  hashtagField.value = '';
+  hashtagFieldElement.value = '';
 };
 const resetDescriptionField = () => {
-  descriptionField.value = '';
+  descriptionFieldElement.value = '';
 };
 
 //функция очистки валидатора
@@ -99,7 +69,7 @@ const resetForm = () => {
 //функция берет строку из поля и преобразовавыет в массив, содержащий хэштеги
 const getHashtagsfromField = () => {
   //переводим введенные хэштеги в нижний регистр
-  const hashtagsInLowerCase = hashtagField.value.toLowerCase();
+  const hashtagsInLowerCase = hashtagFieldElement.value.toLowerCase();
   //удаляем лишние случайные пробелы в строке с хэштегами и заносим хэштеги в массив
   const hashtags = hashtagsInLowerCase.replace(/^ +| +$|( )+/g,'$1').split(' ');
   return hashtags;
@@ -120,7 +90,7 @@ const isHashtagValid =  (currentValue) =>
 
 //проверка всех хэштега на соответствие формату
 const isHashtagsValid = () => {
-  if (hashtagField.value === '') {
+  if (hashtagFieldElement.value === '') {
     return true;
   }
   const hashtags = getHashtagsfromField();
@@ -136,42 +106,42 @@ const isHashtagUnique = () => {
 
 //проверка длины описания изображения
 const isDescriptionValid = () =>
-  checkStringLength(descriptionField.value, DESCRIPTION_MAX_LENGTH);
+  checkStringLength(descriptionFieldElement.value, DESCRIPTION_MAX_LENGTH);
 
 
 //валидация на количество хэштегов, формат записи и дублирование. Валидация описания изображения на длину.
-pristine.addValidator(hashtagField, isHashtagAmountValid, ErrorMessages.HASHTAG_AMOUNT);
-pristine.addValidator(hashtagField, isHashtagsValid, ErrorMessages.HASHTAG_FORMAT);
-pristine.addValidator(hashtagField, isHashtagUnique, ErrorMessages.HASHTAG_REPEAT);
-pristine.addValidator(descriptionField, isDescriptionValid, ErrorMessages.DESCRIPTION_LENGTH);
+pristine.addValidator(hashtagFieldElement, isHashtagAmountValid, ErrorMessages.HASHTAG_AMOUNT);
+pristine.addValidator(hashtagFieldElement, isHashtagsValid, ErrorMessages.HASHTAG_FORMAT);
+pristine.addValidator(hashtagFieldElement, isHashtagUnique, ErrorMessages.HASHTAG_REPEAT);
+pristine.addValidator(descriptionFieldElement, isDescriptionValid, ErrorMessages.DESCRIPTION_LENGTH);
 
 //функции блокировки и разблокировки кнопки отправки
 const blockSubmitButton = () => {
-  submitButton.disabled = true;
-  submitButton.textContent = 'Публикую...';
+  submitButtonElement.disabled = true;
+  submitButtonElement.textContent = 'Публикую...';
 };
 
 const unblockSubmitButton = () => {
-  submitButton.disabled = false;
-  submitButton.textContent = 'Опубликовать';
+  submitButtonElement.disabled = false;
+  submitButtonElement.textContent = 'Опубликовать';
 };
 
 const onSuccess = () => {
   closeModal();
   unblockSubmitButton();
   resetForm();
-  showMessage(successMessage, successButton);
+  showMessage(successMessageElement, successButton);
 };
 
 const onFail = () => {
   closeModal();
-  showMessage(errorMessage,errorButton);
+  showMessage(errorMessageElement,errorButtonElement);
   unblockSubmitButton();
   resetUploadFile();
 };
 
 //отправки формы и вывод сообщений с результатом
-imgUploadForm.addEventListener('submit', (evt) => {
+imgUploadFormElement.addEventListener('submit', (evt) => {
   evt.preventDefault();
 
   const isValid = pristine.validate();

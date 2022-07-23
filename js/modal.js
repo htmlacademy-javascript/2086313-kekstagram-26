@@ -1,22 +1,27 @@
 import {resetForm} from './form-validation.js';
 
 //модуль отвечает за открытие и закрытие модального окна редактирования загружаемого изображения
-const buttonClose = document.querySelector('#upload-cancel');
-const uploadFile = document.querySelector('#upload-file');
-const hashtagField = document.querySelector('.text__hashtags');
-const descriptionField = document.querySelector('.text__description');
-const bodyDocument = document.querySelector('body');
-const uploadFileOverlay = document.querySelector('.img-upload__overlay');
+const buttonCloseElement = document.querySelector('#upload-cancel');
+const uploadFileElement = document.querySelector('#upload-file');
+const hashtagFieldElement = document.querySelector('.text__hashtags');
+const descriptionFieldElement = document.querySelector('.text__description');
+const bodyDocumentElement = document.querySelector('body');
+const uploadFileOverlayElement = document.querySelector('.img-upload__overlay');
+
 
 //функция сброса поля файла
 const resetUploadFile = () => {
-  uploadFile.value = '';
+
+  uploadFileElement.value = '';
+
 };
 
-//функция переключения классов для открытия или закрытия модального окна
+//функция переключения классов для открытия или закрытия модального окна при загрузке
 const toggleClasses =  () => {
-  uploadFileOverlay.classList.toggle('hidden');
-  bodyDocument.classList.toggle('modal-open');
+
+  uploadFileOverlayElement.classList.toggle('hidden');
+  bodyDocumentElement.classList.toggle('modal-open');
+
 };
 
 //проверка нажатая клавиша ESC или нет
@@ -24,44 +29,61 @@ const isEscapeKey = (evt) => (evt.key === 'Escape');
 
 //открытие модального окна
 const openModal = () => {
+
   toggleClasses();
   document.addEventListener('keydown', onModalPressEsc);
+
 };
 
 //закрытие модального
 const closeModal = () =>{
+
   toggleClasses();
   document.removeEventListener('keydown', onModalPressEsc);
+
 };
 
 //функция для скрытия модального окна по эскейпу (вставляется в обработчик нажатия клавиш)
-//рекурсивная функция, ссылающаяся на функцию, которая ее вызывает, поэтому объявляем декларативно
+//функция, ссылающаяся на функцию, которая ее вызывает, поэтому объявляем декларативно
 function onModalPressEsc (evt) {
+
   if (isEscapeKey(evt)) {
+
     closeModal();
     resetForm();
+
   }
+
 }
 
 //отмена закрытия формы по эскейпу при фокусе в поле ввода
-hashtagField.addEventListener('keydown', (evt) => {
+hashtagFieldElement.addEventListener('keydown', (evt) => {
+
   evt.stopPropagation();
+
 });
-descriptionField.addEventListener('keydown', (evt) => {
+
+descriptionFieldElement.addEventListener('keydown', (evt) => {
+
   evt.stopPropagation();
+
 });
 
 //открытие формы редактирования изображения после загрузки файла
-uploadFile.addEventListener('change', () => {
+uploadFileElement.addEventListener('change', () => {
+
   openModal();
+
 });
 
 //закрытие формы редактирования изображения по кнопке и сброс формы
 //необходима отмена действия по умлчанию, тк у кнопки тип ресет, а мы "правильно" сбрасываем форму
-buttonClose.addEventListener('click', (evt) => {
+buttonCloseElement.addEventListener('click', (evt) => {
+
   evt.preventDefault();
   closeModal();
   resetForm();
+
 });
 
 export{toggleClasses, closeModal, resetUploadFile, isEscapeKey};
