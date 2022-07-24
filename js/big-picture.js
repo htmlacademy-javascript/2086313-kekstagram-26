@@ -1,4 +1,4 @@
-import {isEscapeKey} from './modal.js';
+import { isEscapeKey } from './modal.js';
 
 //модуль отвечает за открытие поста
 
@@ -9,57 +9,42 @@ const HIDDEN_CLASS = 'hidden';
 const bodyElement = document.querySelector('body');
 const bigPictureElement = bodyElement.querySelector('.big-picture');
 const bigPictureImgElement = bigPictureElement.querySelector('.big-picture__img');
+const imgElement = bigPictureImgElement.querySelector('img');
 const bigPuctureCancelElement = bigPictureElement.querySelector('.big-picture__cancel');
 const bigPictureDescriptionElement = bigPictureElement.querySelector('.social__caption');
 const bigPictureLikesElement = bigPictureElement.querySelector('.likes-count');
 const commentsLoaderElement = bigPictureElement.querySelector('.comments-loader');
-
 const shownCommentsAmountElement = bigPictureElement.querySelector('.comments-shown');
 const allCommentsAmountElement = bigPictureElement.querySelector('.comments-count');
 const commentsElement = bigPictureElement.querySelector('.social__comments');
 const commentElement = commentsElement.querySelector('.social__comment');
 
-
 const bigPictureOpen = (post) => {
-
   //счетчик опубликованных комментариев
   let counter = 0;
-
+  let lastCommentInGroup = COMMENTS_IN_GROUP;
   //очистка блока с комментариями
   commentsElement.innerHTML = '';
 
-  //вывод комментариев по 5 штук либо все, если их менее 5
   const printComments = () => {
-    const checkCommentsAmoutnt = post.comments.length - counter;
-    if (checkCommentsAmoutnt <= COMMENTS_IN_GROUP) {
-
-      for (let i = counter; i < post.comments.length; i++) {
-        const postedCommentElement = commentElement.cloneNode(true);
-        postedCommentElement.children[0].src = post.comments[counter].avatar;
-        postedCommentElement.children[0].alt = post.comments[counter].name;
-        postedCommentElement.children[1].textContent = post.comments[counter].message;
-        commentsElement.append(postedCommentElement);
-        counter++;
-      }
-      commentsLoaderElement.classList.add(HIDDEN_CLASS);
-
-    } else {
-
-      for (let i = 0; i < COMMENTS_IN_GROUP; i++) {
-        const postedCommentElement = commentElement.cloneNode(true);
-        postedCommentElement.children[0].src = post.comments[counter].avatar;
-        postedCommentElement.children[0].alt = post.comments[counter].name;
-        postedCommentElement.children[1].textContent = post.comments[counter].message;
-        commentsElement.append(postedCommentElement);
-        counter++;
-      }
-
+    for (let i = counter; (i < post.comments.length) && (i < lastCommentInGroup); i++) {
+      const postedCommentElement = commentElement.cloneNode(true);
+      const commentAvatarElement = postedCommentElement.querySelector('.social__picture');
+      const commentMessage = postedCommentElement.querySelector('.social__text');
+      commentAvatarElement.src = post.comments[counter].avatar;
+      commentAvatarElement.alt = post.comments[counter].name;
+      commentMessage.textContent = post.comments[counter].message;
+      commentsElement.append(postedCommentElement);
+      counter++;
     }
-
-    //вывод числа, выведенных комментариев
+    lastCommentInGroup += COMMENTS_IN_GROUP;
     shownCommentsAmountElement.textContent = counter;
+    if (counter === post.comments.length) {
+      commentsLoaderElement.classList.add(HIDDEN_CLASS);
+    }
   };
 
+  printComments();
 
   //функция открытия большой картинки
   const openBigPicture = () => {
@@ -77,8 +62,6 @@ const bigPictureOpen = (post) => {
     document.removeEventListener('keydown', onBigPictureEsc);
     commentsLoaderElement.removeEventListener('click', onCommentsLoaderClick);
   };
-
-  printComments();
 
   //функция вывода дополнительного блока комментариев, объявляется декларативно
   function onCommentsLoaderClick (evt)  {
@@ -100,8 +83,8 @@ const bigPictureOpen = (post) => {
   };
 
   //наполнение окна данными: урл картинки, альт, описание, число лайков и комментариев
-  bigPictureImgElement.children[0].src = post.url;
-  bigPictureImgElement.children[0].alt = post.description;
+  imgElement.src = post.url;
+  imgElement.alt = post.description;
   bigPictureDescriptionElement.textContent = post.description;
   bigPictureLikesElement.textContent = post.likes;
   allCommentsAmountElement.textContent = post.comments.length;
@@ -112,7 +95,6 @@ const bigPictureOpen = (post) => {
   openBigPicture();
   //обработчкик клика по кнопке закрытия окна большой картинки
   bigPuctureCancelElement.addEventListener('click', onBigPuctureCancelClick);
-
 };
 
-export {bigPictureOpen};
+export { bigPictureOpen };

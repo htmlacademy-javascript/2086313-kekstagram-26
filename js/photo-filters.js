@@ -51,19 +51,18 @@ const sliderElement = sliderFieldsetElement.querySelector('.effect-level__slider
 const effectLevelValueElement = sliderFieldsetElement.querySelector('.effect-level__value');
 //див с превью фотографии
 const imgUploadPreviewElement = document.querySelector('.img-upload__preview');
-
+//сама фотография в превью
+const imgElement = imgUploadPreviewElement.querySelector('img');
 
 //создаем класс фильтра
 const getCheckedClass = (filterName) => `effects__preview--${filterName}`;
 
 //добавляем новый класс, удаляем предыдущий
 const changeClass = (newFilterName, oldFilterName) => {
-
   const newClass = getCheckedClass(newFilterName);
   const oldClass = getCheckedClass(oldFilterName);
-  imgUploadPreviewElement.children[0].classList.add(newClass);
-  imgUploadPreviewElement.children[0].classList.remove(oldClass);
-
+  imgElement.classList.add(newClass);
+  imgElement.classList.remove(oldClass);
 };
 
 //текущий фильтр по умолчанию
@@ -71,16 +70,13 @@ let currentClassName = DEFAULT_FILTER;
 
 //reset filter
 const resetFilter = () => {
-
   sliderFieldsetElement.classList.add('hidden');
   effectLevelValueElement.value = '';
-  imgUploadPreviewElement.children[0].style.filter = 'none';
+  imgElement.style.filter = 'none';
   currentClassName = DEFAULT_FILTER;
-  imgUploadPreviewElement.children[0].classList.remove(getCheckedClass(DEFAULT_FILTER));
+  imgElement.classList.remove(getCheckedClass(DEFAULT_FILTER));
   effectButtonsElement[0].checked = true;
-
 };
-
 
 //создание слайдера
 noUiSlider.create(sliderElement, {
@@ -107,65 +103,49 @@ noUiSlider.create(sliderElement, {
 
 //обновление параметров слайдера при выборе фильтра
 const changeSliderSettings = (FilterName) => {
-
   sliderElement.noUiSlider.updateOptions({
-
     range: {
       min: FiltersSettings[FilterName.toUpperCase()].MIN,
       max: FiltersSettings[FilterName.toUpperCase()].MAX,
     },
     start: FiltersSettings[FilterName.toUpperCase()].MAX,
     step: FiltersSettings[FilterName.toUpperCase()].STEP,
-
   });
-
 };
-
 
 //по выбору радиокнопки запускаем обработчик
 effectButtonsElement.forEach((effectButton) => {
-
   effectButton.addEventListener('change', () => {
-
     //вызываем смену классов, меняем текущий фильтр
     changeClass(effectButton.value, currentClassName);
     currentClassName = effectButton.value;
 
     if (currentClassName === DEFAULT_FILTER) {
-
       resetFilter();
 
     } else {
-
       changeSliderSettings(currentClassName);
-
     }
 
   });
-
 });
 
 //передача данных со слайдера в поле формы)
 sliderElement.noUiSlider.on('update', () => {
-
   const sliderValue = sliderElement.noUiSlider.get();
   effectLevelValueElement.value = sliderValue;
 
   if (currentClassName === DEFAULT_FILTER) {
-
-    imgUploadPreviewElement.children[0].style.filter = 'none';
+    imgElement.style.filter = 'none';
 
   } else {
-
     sliderFieldsetElement.classList.remove('hidden');
     const filterStyle = FiltersSettings[currentClassName.toUpperCase()].getFilterStyle(sliderValue);
-    imgUploadPreviewElement.children[0].style.filter = filterStyle;
-
+    imgElement.style.filter = filterStyle;
   }
-
 });
 
 //сброс фильтра по умолчанию
 resetFilter();
 
-export {resetFilter};
+export { resetFilter };

@@ -1,8 +1,8 @@
-import {checkStringLength} from './util.js';
-import {sendData} from './api.js';
-import {closeModal, resetUploadFile} from './modal.js';
-import {resetScale} from './photo-resize.js';
-import {resetFilter} from './photo-filters.js';
+import { checkStringLength } from './util.js';
+import { sendData } from './api.js';
+import { closeModal, resetUploadFile } from './modal.js';
+import { resetScale } from './photo-resize.js';
+import { resetFilter } from './photo-filters.js';
 import { showMessage } from './show-message.js';
 
 //модуль отвечает за валидацию и отправку формы загрузки нового изображения (поля хэштегов и описания)
@@ -152,4 +152,4 @@ imgUploadFormElement.addEventListener('submit', (evt) => {
 
 });
 
-export {resetForm};
+export { resetForm };
