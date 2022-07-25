@@ -13,6 +13,8 @@ const showMessage = (message, button) => {
   document.addEventListener('keydown', onMessagePressEsc);
   document.addEventListener('click', isClickOutside);
 
+  //функция закрытия сообщения по клику за пределами блока сообщения, объявляется декларативно, чтобы
+  //благодаря всплытию этот обработчик можно было удалить выше по коду в hideMessage()
   function isClickOutside  (evt) {
     const clickInside = message.querySelector('.success__inner').contains(evt.target);
     if (!clickInside) {
@@ -20,6 +22,8 @@ const showMessage = (message, button) => {
     }
   }
 
+  //функция закрытия сообщения по нажатию ESC, объявляется декларативно, чтобы
+  //благодаря всплытию этот обработчик можно было удалить выше по коду в hideMessage()
   function onMessagePressEsc () {
     if (isEscapeKey) {
       hideMessage();
