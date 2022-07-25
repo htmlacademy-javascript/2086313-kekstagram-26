@@ -1,5 +1,6 @@
-import {showAlert} from './util.js';
+import { showAlert } from './util.js';
 
+//модуль отвечает за взаимодействие с сервером
 const SERVER_URL = 'https://26.javascript.pages.academy/kekstagram';
 
 const getData = (onSuccess) => {
@@ -33,4 +34,4 @@ const sendData = (onSuccess, onFail, body) => {
     });
 };
 
-export {getData, sendData};
+export { getData, sendData };

@@ -1,3 +1,5 @@
+//модуль со вспомогательными функциями
+
 //функция проверяет строку на соответствие максимальной длине ()
 const checkStringLength = (string, maxLength) => string.length <= maxLength;
 
@@ -21,18 +23,12 @@ const getRandomPositiveInteger = (min, max) => {
 //Функция генерирует уникальное случайное число
 const getUniqueRandomInteger = (min, max, usedIds) => {
   const uniqueRandomInteger = getRandomPositiveInteger(min, max);
-  if (usedIds.includes(uniqueRandomInteger)){
+  if (usedIds.includes(uniqueRandomInteger)) {
     return getUniqueRandomInteger(min, max, usedIds);
   }
-
   usedIds.push(uniqueRandomInteger);
   return uniqueRandomInteger;
-
 };
-
-//функция генерирует случайный элемент массива
-const getRandomArrayElement = (array) => array[getRandomPositiveInteger(0, array.length-1)];
-
 
 //Алерт при ошибке ответа сервера
 const showAlert = (message) => {
@@ -46,11 +42,8 @@ const showAlert = (message) => {
   alertContainer.style.fontSize = '30px';
   alertContainer.style.textAlign = 'center';
   alertContainer.style.backgroundColor = 'red';
-
   alertContainer.textContent = message;
-
   document.body.append(alertContainer);
-
   setTimeout(() => {
     alertContainer.remove();
   }, 3000);
@@ -69,13 +62,4 @@ const debounce = (callback, timeoutDelay) => {
   };
 };
 
-
-export {
-  checkStringLength,
-  getRandomPositiveInteger,
-  getRandomArrayElement,
-  getUniqueRandomInteger,
-  showAlert,
-  toggleFilterButton,
-  debounce};
-
+export { checkStringLength, getUniqueRandomInteger, showAlert, toggleFilterButton, debounce };

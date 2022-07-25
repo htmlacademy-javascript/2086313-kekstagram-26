@@ -1,54 +1,57 @@
-import {data} from './data.js';
-import {getUniqueRandomInteger, toggleFilterButton, debounce} from './util.js';
-import {getPictures} from './pictures.js';
+import { data } from './data.js';
+import { getUniqueRandomInteger, toggleFilterButton, debounce } from './util.js';
+import { renderPictures } from './pictures.js';
 
+//модуль отвечает за сортировку ранее опубликованных постов
 const FILTER_ACTIV_BUTTON_CLASS = 'img-filters__button--active';
 const RANDOM_POSTS_AMOUNT = 10;
 const RERENDER_DELAY = 500;
 
 const postsFilter = () => {
   const postsFiltersElement = document.querySelector('.img-filters');
-  const filterDefaultButton = postsFiltersElement.querySelector('#filter-default');
-  const filterRandomButton = postsFiltersElement.querySelector('#filter-random');
-  const filterDiscussedButton = postsFiltersElement.querySelector('#filter-discussed');
+  const filterDefaultButtonElement = postsFiltersElement.querySelector('#filter-default');
+  const filterRandomButtonElement = postsFiltersElement.querySelector('#filter-random');
+  const filterDiscussedButtonElement = postsFiltersElement.querySelector('#filter-discussed');
 
   //включение кнопки блока с кнопками филтров
   postsFiltersElement.classList.remove('img-filters--inactive');
 
   //фильтр по умолчанию
-  let activButton = filterDefaultButton;
+  let activButton = filterDefaultButtonElement;
 
   //клик по кнопке с рандомными постами
   const setRandomPosts = () => {
-    filterRandomButton.addEventListener('click', debounce(() => {
-      toggleFilterButton(activButton,FILTER_ACTIV_BUTTON_CLASS,filterRandomButton);
-      activButton = filterRandomButton;
+
+    filterRandomButtonElement.addEventListener('click', debounce(() => {
+      toggleFilterButton(activButton,FILTER_ACTIV_BUTTON_CLASS,filterRandomButtonElement);
+      activButton = filterRandomButtonElement;
       const postsDefault = data.posts;
       let usedIndex = [];
       const randomPosts =  [];
+
       for (let i = 0; i < RANDOM_POSTS_AMOUNT; i++) {
         randomPosts.push(postsDefault[getUniqueRandomInteger(0, postsDefault.length - 1, usedIndex)]);
       }
       usedIndex = [];
-      getPictures(randomPosts);
+      renderPictures(randomPosts);
     }, RERENDER_DELAY));
   };
 
   //клик по кнопке с дефолтными постами
   const setDefaultPosts = () => {
-    filterDefaultButton.addEventListener('click', debounce(() => {
-      toggleFilterButton(activButton, FILTER_ACTIV_BUTTON_CLASS, filterDefaultButton);
-      activButton = filterDefaultButton;
+    filterDefaultButtonElement.addEventListener('click', debounce(() => {
+      toggleFilterButton(activButton, FILTER_ACTIV_BUTTON_CLASS, filterDefaultButtonElement);
+      activButton = filterDefaultButtonElement;
       const postsDefault = data.posts;
-      getPictures(postsDefault);
+      renderPictures(postsDefault);
     }, RERENDER_DELAY));
   };
 
   //клик по кнопке с обсуждаемыми постами
   const setDiscussePosts = () => {
-    filterDiscussedButton.addEventListener('click', debounce(() => {
-      toggleFilterButton(activButton, FILTER_ACTIV_BUTTON_CLASS, filterDiscussedButton);
-      activButton = filterDiscussedButton;
+    filterDiscussedButtonElement.addEventListener('click', debounce(() => {
+      toggleFilterButton(activButton, FILTER_ACTIV_BUTTON_CLASS, filterDiscussedButtonElement);
+      activButton = filterDiscussedButtonElement;
       const postsDefault = data.posts;
       const postsDiscussed = postsDefault.slice();
       const comparePosts = (postA, postB) => {
@@ -57,7 +60,7 @@ const postsFilter = () => {
         return commentsAmountB - commentsAmountA;
       };
       postsDiscussed.sort(comparePosts);
-      getPictures(postsDiscussed);
+      renderPictures(postsDiscussed);
     }, RERENDER_DELAY));
   };
 
@@ -66,4 +69,4 @@ const postsFilter = () => {
   setDiscussePosts();
 };
 
-export {postsFilter};
+export { postsFilter };
