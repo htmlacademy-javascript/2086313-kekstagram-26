@@ -26,13 +26,13 @@ const postsFilter = () => {
       toggleFilterButton(activButton,FILTER_ACTIV_BUTTON_CLASS,filterRandomButtonElement);
       activButton = filterRandomButtonElement;
       const postsDefault = data.posts;
-      let usedIndex = [];
+      let usedIndexes = [];
       const randomPosts =  [];
 
       for (let i = 0; i < RANDOM_POSTS_AMOUNT; i++) {
-        randomPosts.push(postsDefault[getUniqueRandomInteger(0, postsDefault.length - 1, usedIndex)]);
+        randomPosts.push(postsDefault[getUniqueRandomInteger(0, postsDefault.length - 1, usedIndexes)]);
       }
-      usedIndex = [];
+      usedIndexes = [];
       renderPictures(randomPosts);
     }, RERENDER_DELAY));
   };

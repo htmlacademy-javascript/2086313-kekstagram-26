@@ -61,26 +61,30 @@ const bigPictureOpen = (post) => {
     counter = 0;
     document.removeEventListener('keydown', onBigPictureEsc);
     commentsLoaderElement.removeEventListener('click', onCommentsLoaderClick);
+    bigPuctureCancelElement.removeEventListener('click', onBigPuctureCancelClick);
   };
 
-  //функция вывода дополнительного блока комментариев, объявляется декларативно
+  //функция вывода дополнительного блока комментариев, объявляется декларативно, чтобы
+  //благодаря всплытию этот обработчик можно было удалить выше по коду в closeBigPicture()
   function onCommentsLoaderClick (evt)  {
     evt.preventDefault();
     printComments();
   }
 
-  //функция закрытия большой картинки по эскейпу, объявляется декларативно
+  //функция закрытия большой картинки по эскейпу, объявляется декларативно, чтобы
+  //благодаря всплытию этот обработчик можно было удалить выше по коду в closeBigPicture()
   function onBigPictureEsc (evt) {
     if (isEscapeKey(evt)) {
       closeBigPicture();
     }
   }
 
-  //функция закрытия большой картинки по клику
-  const onBigPuctureCancelClick = (evt) => {
+  //функция закрытия большой картинки по клику, объявляется декларативно, чтобы
+  //благодаря всплытию этот обработчик можно было удалить выше по коду в closeBigPicture()
+  function onBigPuctureCancelClick (evt) {
     evt.preventDefault();
     closeBigPicture();
-  };
+  }
 
   //наполнение окна данными: урл картинки, альт, описание, число лайков и комментариев
   imgElement.src = post.url;
